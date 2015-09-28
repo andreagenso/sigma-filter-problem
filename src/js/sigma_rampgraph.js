@@ -2,13 +2,15 @@
 * Draw Sigma graph
 **/
 
+// var s; uncomment this for replicated error, I think is related to instance
+
 sigma.utils.pkg('sigma.canvas.nodes');
 
 function drawGraph(ns, callbackName, idSection, inputName) {
     var callbackFullPath = "App.namespace('" + ns + "')." + callbackName;
     var section = "#" + idSection + " form input[name=" + inputName + "]";
 
-    var s;
+    var s; // when var s is here, filter only works first time, second and other times does not work
     var filter;
 
     data = {result: {
