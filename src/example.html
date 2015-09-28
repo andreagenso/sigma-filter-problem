@@ -1,0 +1,204 @@
+<script src="../src/js/jquery/dist/jquery.js"></script>
+<!-- START SIGMA IMPORTS -->
+<script src="../src/js/sigma/src/sigma.core.js"></script>
+<script src="../src/js/sigma/src/conrad.js"></script>
+<script src="../src/js/sigma/src/utils/sigma.utils.js"></script>
+<script src="../src/js/sigma/src/utils/sigma.polyfills.js"></script>
+<script src="../src/js/sigma/src/sigma.settings.js"></script>
+<script src="../src/js/sigma/src/classes/sigma.classes.dispatcher.js"></script>
+<script src="../src/js/sigma/src/classes/sigma.classes.configurable.js"></script>
+<script src="../src/js/sigma/src/classes/sigma.classes.graph.js"></script>
+<script src="../src/js/sigma/src/classes/sigma.classes.camera.js"></script>
+<script src="../src/js/sigma/src/classes/sigma.classes.quad.js"></script>
+<script src="../src/js/sigma/src/captors/sigma.captors.mouse.js"></script>
+<script src="../src/js/sigma/src/captors/sigma.captors.touch.js"></script>
+<script src="../src/js/sigma/src/renderers/sigma.renderers.canvas.js"></script>
+<script src="../src/js/sigma/src/renderers/sigma.renderers.webgl.js"></script>
+<script src="../src/js/sigma/src/renderers/sigma.renderers.def.js"></script>
+<script src="../src/js/sigma/src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
+<script src="../src/js/sigma/src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
+<script src="../src/js/sigma/src/renderers/webgl/sigma.webgl.edges.def.js"></script>
+<script src="../src/js/sigma/src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
+<script src="../src/js/sigma/src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+<script src="../src/js/sigma/src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+<script src="../src/js/sigma/src/middlewares/sigma.middlewares.rescale.js"></script>
+<script src="../src/js/sigma/src/middlewares/sigma.middlewares.copy.js"></script>
+<script src="../src/js/sigma/src/misc/sigma.misc.animation.js"></script>
+<script src="../src/js/sigma/src/misc/sigma.misc.bindEvents.js"></script>
+<script src="../src/js/sigma/src/misc/sigma.misc.drawHovers.js"></script>
+<script src="../src/js/sigma/plugins/sigma.plugins.filter/sigma.plugins.filter.js"></script>
+<script src="../src/js/sigma/plugins/sigma.renderers.customShapes/shape-library.js"></script>
+<script src="../src/js/sigma/plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
+
+<!-- END SIGMA IMPORTS -->
+<div id="container">
+    <style>
+        #graph-container {
+        top: 20px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+        }
+
+        #control-pane {
+        top: 10px;
+        /*bottom: 10px;*/
+        right: 10px;
+        position: absolute;
+        width: 230px;
+        background-color: rgb(249, 247, 237);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        #control-pane > div {
+        margin: 10px;
+        overflow-x: auto;
+        }
+
+        #legend {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 0 0 10px;
+        }
+
+        #legend .line {
+        clear: both;
+        line-height: 140%;
+        padding-right: 15px;
+        }
+
+        #legend li {
+        padding: 0 0 0 2px;
+        min-width: 80px;
+        white-space: nowrap;
+        }
+
+        #legend ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        margin: 2px;
+        cursor: pointer;
+        }
+
+        #legend .swatch {
+        width: 10px;
+        height: 10px;
+        border: 1px solid rgba(0,0,0,.2);
+        }
+
+        #legend .line .swatch {
+        display: inline-block;
+        margin-right: 3px;
+        border-radius: 2px;
+        }
+
+        #legend .label {
+        margin: 0;
+        white-space: nowrap;
+        display: inline;
+        font-size: inherit;
+        background-color: transparent;
+        color: inherit;
+        font-weight: 400;
+        line-height: normal;
+        padding: 0;
+        text-shadow: none;
+        }
+
+        /*.line {
+        clear: both;
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 12px 0 0 0;
+        border-bottom: 1px solid #aac789;
+        background: transparent;
+        }*/
+
+        h2, h3, h4 {
+        padding: 0;
+        font-variant: small-caps;
+        }
+
+        .green {
+        color: #437356;
+        }
+
+        h2.underline {
+        color: #437356;
+        background: #f4f0e4;
+        margin: 0;
+        border-radius: 2px;
+        padding: 8px 12px;
+        font-weight: 700;
+        }
+
+        .hidden {
+        display: none;
+        visibility: hidden;
+        }
+
+        input[type=range] {
+        width: 160px;
+        }
+    </style>
+
+    <div id="container-rampgraph" data-lift="DashboardChartIndividualSnippets.rampGraph">
+        <form method="get">
+            <input type="hidden" name="indivual-graph-callback-name" />
+            <select data-name="select-graph">
+                <option value="1">All Nodes</option>
+                <option value="2">All Nodes + Squares</option>
+            </select>
+            <button type="button" onclick="callSigma();" data-name="submit-individual-graph" class="btn btn-default">Regenerate</button>
+        </form>
+        <div>
+        </div>
+    </div>
+    <div id="graph-container"></div>
+
+    <div id="control-pane">
+        <h2 class="underline">filters</h2>
+
+        <div>
+            <h3>min degree <span id="min-degree-val">0</span></h3>
+            0 <input id="min-degree" type="range" min="0" max="0" value="0"> <span id="max-degree-value">0</span><br>
+        </div>
+        <div>
+            <h3>City</h3>
+            <select id="node-city">
+                <option value="" selected>All cities</option>
+            </select>
+        </div>
+
+
+        <span class="line"></span>
+        <div>
+            <button id="reset-btn">Reset filters</button>
+            <button id="export-btn">Export</button>
+        </div>
+        <div id="dump" class="hidden"></div>
+    </div>
+
+</div>
+<!-- End Ram graph -->
+<script type="text/javascript" src="../src/js/sigma_rampgraph.js"></script>
+<script>
+    function callSigma() {
+
+        var ns = "dashboard.individual.graph";
+        var callbackName = "dashboardIndividualGraphCallback";
+
+        drawGraph(ns, callbackName, "container-rampgraph", "indivual-graph-callback-name");
+    }
+</script>
+
+
